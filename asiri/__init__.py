@@ -1,6 +1,8 @@
 
 from .mcp230xx import MCP230XX
 
+__version__ = '0.1.0'
+
 __all__ = ['GPIO']
 
 
