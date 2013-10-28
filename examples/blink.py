@@ -8,12 +8,12 @@ LED = 8
 gpio = GPIO(num_gpios=16)
 gpio.setup(LED, GPIO.OUT)
 
-state = False
 try:
     while True:
-        gpio.output(LED, state)
+        gpio.output(LED, GPIO.LOW)
         sleep(1)
-        state = not state
+        gpio.output(LED, GPIO.HIGH)
+        sleep(1)
 except KeyboardInterrupt:
     pass
 finally:
