@@ -12,7 +12,10 @@ class GPIO(object):
     """
 
     OUT = MCP230XX.OUTPUT
-    IN = MCP230XX.INPUT
+    IN  = MCP230XX.INPUT
+
+    HIGH = 1
+    LOW  = 0
 
     def __init__(self, num_gpios=16, busnum=1, address=0x20):
         self._chip = MCP230XX(busnum, address, num_gpios)
