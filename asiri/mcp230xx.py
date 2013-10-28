@@ -1,7 +1,7 @@
 
 from .i2c import I2C
 
-__all__ = ['MCP230XX', 'GPIO']
+__all__ = ['MCP230XX']
 
 
 MCP23017_IODIRA = 0x00
@@ -60,7 +60,7 @@ class MCP230XX(object):
         if self.num_gpios == 8:
             self._read_change_pin(MCP23008_GPPUA, pin, value)
         elif self.num_gpios == 16:
-            if (pin < 8):
+            if pin < 8:
                 self._read_change_pin(MCP23017_GPPUA, pin, value)
             else:
                 self._read_change_pin(MCP23017_GPPUB, pin-8, value) << 8
@@ -69,7 +69,7 @@ class MCP230XX(object):
         if self.num_gpios == 8:
             self._direction = self._read_change_pin(MCP23017_IODIRA, pin, mode)
         elif self.num_gpios == 16:
-            if (pin < 8):
+            if pin < 8:
                 self._direction = self._read_change_pin(MCP23017_IODIRA, pin, mode)
             else:
                 self._direction |= self._read_change_pin(MCP23017_IODIRB, pin-8, mode) << 8
@@ -79,7 +79,7 @@ class MCP230XX(object):
         if self.num_gpios == 8:
             self._read_change_pin(MCP23008_GPIOA, pin, value, self._i2c.read8(MCP23008_OLATA))
         if self.num_gpios == 16:
-            if (pin < 8):
+            if pin < 8:
                 self._read_change_pin(MCP23017_GPIOA, pin, value, self._i2c.read8(MCP23017_OLATA))
             else:
                 self._read_change_pin(MCP23017_GPIOB, pin-8, value, self._i2c.read8(MCP23017_OLATB)) << 8
@@ -92,34 +92,4 @@ class MCP230XX(object):
             value = self._i2c.read8(MCP23017_GPIOA)
             value |= self._i2c.read8(MCP23017_GPIOB) << 8
         return value & (1 << pin)
-
-
-class GPIO(object):
-    """
-    RPi.GPIO-like interface for MCP23017 and MCP23008
-    """
-
-    OUT = MCP230XX.OUTPUT
-    IN = MCP230XX.INPUT
-
-    def __init__(self, num_gpios=16, busnum=1, address=0x20):
-        self._chip = MCP230XX(busnum, address, num_gpios)
-
-    def setup(self, pin, mode):
-        self._chip.config(pin, mode)
-
-    def input(self, pin):
-        return self._chip.input(pin)
-
-    def output(self, pin, value):
-        self._chip.output(pin, value)
-
-    def pullup(self, pin, value):
-        self._chip.pullup(pin, value)
-
-    def cleanup(self):
-        try:
-            self._chip.reset()
-        except Exception:
-            pass
 
